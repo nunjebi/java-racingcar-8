@@ -46,5 +46,7 @@ public class Application {
                 .filter(personIdx -> dashScores[personIdx].length() == winnerScore)
                 .mapToObj(personIdx -> names.get(personIdx))
                 .collect(Collectors.joining(", "));
+
+        System.out.println("최종 우승자 : " + winners);
     }
 }
