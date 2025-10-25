@@ -2,6 +2,7 @@ package racingcar;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import camp.nextstep.edu.missionutils.Console;
@@ -33,6 +34,17 @@ public class Application {
                                 System.out.println(names.get(personIdx) + " : " + dashScores[personIdx]);
                             });
 
+                    System.out.println();
                 });
+
+        int winnerScore = Arrays.stream(dashScores)
+                .mapToInt(String::length) // 길이로 변환
+                .max()// 최댓값 찾기
+                .orElse(0);// 배열이 비어 있으면 0 반환
+
+        String winners = IntStream.range(0, dashScores.length)
+                .filter(personIdx -> dashScores[personIdx].length() == winnerScore)
+                .mapToObj(personIdx -> names.get(personIdx))
+                .collect(Collectors.joining(", "));
     }
 }
