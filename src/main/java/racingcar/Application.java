@@ -22,12 +22,17 @@ public class Application {
         String[] dashScores = new String[names.size()];
         Arrays.fill(dashScores, "");
 
-        IntStream.range(0, names.size())
-                .forEach(personIdx -> {
-                    int randomValue = Randoms.pickNumberInRange(0, 9);
-                    if (randomValue >= 4) {
-                        dashScores[personIdx] += "-";
-                    }
+        IntStream.range(0, tryCount)
+                .forEach(stage -> {
+                    IntStream.range(0, names.size())
+                            .forEach(personIdx -> {
+                                int randomValue = Randoms.pickNumberInRange(0, 9);
+                                if (randomValue >= 4) {
+                                    dashScores[personIdx] += "-";
+                                }
+                                System.out.println(names.get(personIdx) + " : " + dashScores[personIdx]);
+                            });
+
                 });
     }
 }
