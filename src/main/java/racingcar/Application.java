@@ -1,5 +1,8 @@
 package racingcar;
 
+import java.util.Arrays;
+import java.util.List;
+
 import camp.nextstep.edu.missionutils.Console;
 
 public class Application {
@@ -9,5 +12,9 @@ public class Application {
 
         System.out.println("시도할 횟수는 몇 회인가요?");
         int tryCount = Integer.parseInt(Console.readLine());
+
+        List<String> names = Arrays.stream(inputCarsName.split(","))
+                .map(String::trim)
+                .toList();
     }
 }
