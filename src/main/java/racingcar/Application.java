@@ -9,6 +9,15 @@ import camp.nextstep.edu.missionutils.Console;
 import camp.nextstep.edu.missionutils.Randoms;
 
 public class Application {
+    public class RacingContants {
+        static final int MOVING_FORWARD = 4;
+        static final int MAX_NAME_LENGTH = 5;
+
+        static final String CAR_NAME_EMPTY_ERROR = "공백을 제외한 이름을 입력해야 합니다.";
+        static final String CAR_NAME_LENGTH_ERROR = "이름은 5자 이하만 가능합니다.";
+        static final String TRY_COUNT_INVALID_ERROR = "시도할 횟수는 1 이상의 정수로 입력해야 합니다.";
+    }
+
     private static class Racingcar {
         private List<String> carNames;
         private int tryCount;
@@ -41,7 +50,7 @@ public class Application {
 
         private void moveCar(int carIndex) {
             int randomValue = Randoms.pickNumberInRange(0, 9);
-            if (randomValue >= 4) {
+            if (randomValue >= RacingContants.MOVING_FORWARD) {
                 dashScores[carIndex] += "-";
             }
         }
@@ -100,7 +109,7 @@ public class Application {
 
     static void validateInputCarNames(String inputString) {
         if (inputString.isBlank() || inputString.endsWith(",") || inputString.endsWith(" ")) {
-            throw new IllegalArgumentException("공백을 제외한 이름을 입력해야 합니다.");
+            throw new IllegalArgumentException(RacingContants.CAR_NAME_EMPTY_ERROR);
         }
     }
 
@@ -113,18 +122,18 @@ public class Application {
         return Integer.parseInt(tryCountString);
     }
 
-    private static void validateInputTryCount(String tryCountString) {
+    static void validateInputTryCount(String tryCountString) {
         try {
             int tryCount = Integer.parseInt(tryCountString);
             if (tryCount <= 0) {
-                throw new IllegalArgumentException("시도할 횟수는 1 이상의 정수로 입력해야 합니다.");
+                throw new IllegalArgumentException(RacingContants.TRY_COUNT_INVALID_ERROR);
             }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("시도할 횟수는 1 이상의 정수로 입력해야 합니다.");
+            throw new IllegalArgumentException(RacingContants.TRY_COUNT_INVALID_ERROR);
         }
     }
 
-    private static List<String> parseNames(String inputString) {
+    static List<String> parseNames(String inputString) {
         List<String> names = Arrays.stream(inputString.split(","))
                 .map(String::trim)
                 .toList();
@@ -140,8 +149,8 @@ public class Application {
                 .max()
                 .orElse(0);
 
-        if (maxLength > 5) {
-            throw new IllegalArgumentException("이름은 5자 이하만 가능합니다.");
+        if (maxLength > RacingContants.MAX_NAME_LENGTH) {
+            throw new IllegalArgumentException(RacingContants.CAR_NAME_LENGTH_ERROR);
         }
     }
 }
