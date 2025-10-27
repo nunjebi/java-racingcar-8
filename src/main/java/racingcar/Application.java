@@ -11,9 +11,13 @@ import camp.nextstep.edu.missionutils.Console;
 import camp.nextstep.edu.missionutils.Randoms;
 
 public class Application {
-    public class RacingContants {
+    public class RacingConstants {
+        private RacingConstants() {
+        }
+
         static final int MOVING_FORWARD = 4;
         static final int MAX_NAME_LENGTH = 5;
+        static final int MIN_TRY_COUNT = 1;
         static final int MAX_TRY_COUNT = 30;
 
         static final String CAR_NAME_EMPTY_ERROR = "공백을 제외한 이름을 입력해야 합니다.";
@@ -56,7 +60,7 @@ public class Application {
 
         private void moveCar(int carIndex) {
             int randomValue = Randoms.pickNumberInRange(0, 9);
-            if (randomValue >= RacingContants.MOVING_FORWARD) {
+            if (randomValue >= RacingConstants.MOVING_FORWARD) {
                 dashScores[carIndex] += "-";
             }
         }
@@ -115,10 +119,10 @@ public class Application {
 
     static void validateInputCarNames(String inputString) {
         if (inputString.contains(",,")) {
-            throw new IllegalArgumentException(RacingContants.DUPLICATE_COMMA_ERROR);
+            throw new IllegalArgumentException(RacingConstants.DUPLICATE_COMMA_ERROR);
         }
         if (inputString.isBlank() || inputString.endsWith(",") || inputString.endsWith(" ")) {
-            throw new IllegalArgumentException(RacingContants.CAR_NAME_EMPTY_ERROR);
+            throw new IllegalArgumentException(RacingConstants.CAR_NAME_EMPTY_ERROR);
         }
     }
 
@@ -134,13 +138,13 @@ public class Application {
     static void validateInputTryCount(String tryCountString) {
         try {
             int tryCount = Integer.parseInt(tryCountString);
-            if (tryCount <= 0) {
-                throw new IllegalArgumentException(RacingContants.TRY_COUNT_INVALID_ERROR);
-            } else if (tryCount > RacingContants.MAX_TRY_COUNT) {
-                throw new IllegalArgumentException(RacingContants.TRY_COUNT_MAX_ERROR);
+            if (tryCount < RacingConstants.MIN_TRY_COUNT) {
+                throw new IllegalArgumentException(RacingConstants.TRY_COUNT_INVALID_ERROR);
+            } else if (tryCount > RacingConstants.MAX_TRY_COUNT) {
+                throw new IllegalArgumentException(RacingConstants.TRY_COUNT_MAX_ERROR);
             }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(RacingContants.TRY_COUNT_INVALID_ERROR);
+            throw new IllegalArgumentException(RacingConstants.TRY_COUNT_INVALID_ERROR);
         }
     }
 
@@ -157,15 +161,15 @@ public class Application {
     static void validateCarNames(List<String> names) {
         Set<String> uniqueNames = new HashSet<>(names);
         if (uniqueNames.size() != names.size()) {
-            throw new IllegalArgumentException(RacingContants.CAR_NAME_UNIQUE_ERROR);
+            throw new IllegalArgumentException(RacingConstants.CAR_NAME_UNIQUE_ERROR);
         }
 
         int maxLength = names.stream()
                 .mapToInt(String::length)
                 .max()
                 .orElse(0);
-        if (maxLength > RacingContants.MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException(RacingContants.CAR_NAME_LENGTH_ERROR);
+        if (maxLength > RacingConstants.MAX_NAME_LENGTH) {
+            throw new IllegalArgumentException(RacingConstants.CAR_NAME_LENGTH_ERROR);
         }
 
     }
