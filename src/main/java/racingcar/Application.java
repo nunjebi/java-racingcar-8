@@ -91,24 +91,34 @@ public class Application {
 
     private static String inputCarNames() {
         System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)");
-
         String inputString = Console.readLine();
-        if (inputString.isBlank() || inputString.endsWith(",") || inputString.endsWith(" ")) {
-            throw new IllegalArgumentException("공백을 제외한 이름을 입력해야 합니다.");
-        }
+
+        validateInputCarNames(inputString);
 
         return inputString;
     }
 
+    static void validateInputCarNames(String inputString) {
+        if (inputString.isBlank() || inputString.endsWith(",") || inputString.endsWith(" ")) {
+            throw new IllegalArgumentException("공백을 제외한 이름을 입력해야 합니다.");
+        }
+    }
+
     private static int inputTryCount() {
         System.out.println("시도할 횟수는 몇 회인가요?");
+        String tryCountString = Console.readLine();
+
+        validateInputTryCount(tryCountString);
+
+        return Integer.parseInt(tryCountString);
+    }
+
+    private static void validateInputTryCount(String tryCountString) {
         try {
-            int tryCount = Integer.parseInt(Console.readLine());
+            int tryCount = Integer.parseInt(tryCountString);
             if (tryCount <= 0) {
                 throw new IllegalArgumentException("시도할 횟수는 1 이상의 정수로 입력해야 합니다.");
             }
-
-            return tryCount;
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("시도할 횟수는 1 이상의 정수로 입력해야 합니다.");
         }
