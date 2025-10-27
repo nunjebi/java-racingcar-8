@@ -75,9 +75,9 @@ public class Application {
 
     public static void main(String[] args) {
         String inputString = inputCarNames();
-        int tryCount = inputTryCount();
-
         List<String> carNames = parseNames(inputString);
+
+        int tryCount = inputTryCount();
 
         Racingcar game = new Racingcar(carNames, tryCount);
 
@@ -91,17 +91,47 @@ public class Application {
 
     private static String inputCarNames() {
         System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)");
-        return   Console.readLine();
+
+        String inputString = Console.readLine();
+        if (inputString.isBlank() || inputString.endsWith(",") || inputString.endsWith(" ")) {
+            throw new IllegalArgumentException("공백을 제외한 이름을 입력해야 합니다.");
+        }
+
+        return inputString;
     }
 
     private static int inputTryCount() {
         System.out.println("시도할 횟수는 몇 회인가요?");
-        return Integer.parseInt(Console.readLine());
+        try {
+            int tryCount = Integer.parseInt(Console.readLine());
+            if (tryCount <= 0) {
+                throw new IllegalArgumentException("시도할 횟수는 1 이상의 정수로 입력해야 합니다.");
+            }
+
+            return tryCount;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("시도할 횟수는 1 이상의 정수로 입력해야 합니다.");
+        }
     }
 
     private static List<String> parseNames(String inputString) {
-        return Arrays.stream(inputString.split(","))
+        List<String> names = Arrays.stream(inputString.split(","))
                 .map(String::trim)
                 .toList();
+
+        validateCarNames(names);
+
+        return names;
+    }
+
+    private static void validateCarNames(List<String> names) {
+        int maxLength = names.stream()
+                .mapToInt(String::length)
+                .max()
+                .orElse(0);
+
+        if (maxLength > 5) {
+            throw new IllegalArgumentException("이름은 5자 이하만 가능합니다.");
+        }
     }
 }
