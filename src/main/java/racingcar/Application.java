@@ -109,12 +109,16 @@ public class Application {
     }
 
     private static String inputCarNames() {
-        System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)");
+        printCarNameInputGuide();
         String inputString = Console.readLine();
 
         validateInputCarNames(inputString);
 
         return inputString;
+    }
+
+    private static void printCarNameInputGuide() {
+        System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)");
     }
 
     static void validateInputCarNames(String inputString) {
@@ -127,12 +131,16 @@ public class Application {
     }
 
     private static int inputTryCount() {
-        System.out.println("시도할 횟수는 몇 회인가요?");
+        printInputTryCountGuide();
         String tryCountString = Console.readLine();
 
         validateInputTryCount(tryCountString);
 
         return Integer.parseInt(tryCountString);
+    }
+
+    private static void printInputTryCountGuide() {
+        System.out.println("시도할 횟수는 몇 회인가요?");
     }
 
     static void validateInputTryCount(String tryCountString) {
