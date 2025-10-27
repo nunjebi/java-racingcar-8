@@ -9,44 +9,99 @@ import camp.nextstep.edu.missionutils.Console;
 import camp.nextstep.edu.missionutils.Randoms;
 
 public class Application {
+    private static class Racingcar {
+        private List<String> carNames;
+        private int tryCount;
+        private String[] dashScores;
+
+        Racingcar(List<String> carNames, int tryCount) {
+            this.carNames = carNames;
+            this.tryCount = tryCount;
+
+            dashScores = new String[carNames.size()];
+            Arrays.setAll(dashScores, index -> "");
+        };
+
+        private void start() {
+            System.out.println("\n실행 결과");
+
+            IntStream.range(0, tryCount)
+                    .forEach(temp -> {
+                        race();
+                        printDashScores();
+                    });
+        }
+
+        private void race() {
+            IntStream.range(0, carNames.size())
+                    .forEach(carIndex -> {
+                        moveCar(carIndex);
+                    });
+        }
+
+        private void moveCar(int carIndex) {
+            int randomValue = Randoms.pickNumberInRange(0, 9);
+            if (randomValue >= 4) {
+                dashScores[carIndex] += "-";
+            }
+        }
+
+        private void printDashScores() {
+            IntStream.range(0, carNames.size())
+                    .forEach(carIndex -> {
+                        System.out.println(carNames.get(carIndex) + " : " + dashScores[carIndex]);
+                    });
+            System.out.println();
+        }
+
+        private int getWinnerScore() {
+            return Arrays.stream(dashScores)
+                    .mapToInt(String::length)
+                    .max()
+                    .orElse(0);
+        }
+
+        private String getWinners(int winnerScore) {
+            return IntStream.range(0, dashScores.length)
+                    .filter(carIndex -> dashScores[carIndex].length() == winnerScore)
+                    .mapToObj(carIndex -> carNames.get(carIndex))
+                    .collect(Collectors.joining(", "));
+        }
+
+        private void printWinners(String winners) {
+            System.out.println("최종 우승자 : " + winners);
+        }
+    }
+
     public static void main(String[] args) {
+        String inputString = inputCarNames();
+        int tryCount = inputTryCount();
+
+        List<String> carNames = parseNames(inputString);
+
+        Racingcar game = new Racingcar(carNames, tryCount);
+
+        game.start();
+
+        int winnerScore = game.getWinnerScore();
+        String winners = game.getWinners(winnerScore);
+
+        game.printWinners(winners);
+    }
+
+    private static String inputCarNames() {
         System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)");
-        String inputCarsName = Console.readLine();
+        return   Console.readLine();
+    }
 
+    private static int inputTryCount() {
         System.out.println("시도할 횟수는 몇 회인가요?");
-        int tryCount = Integer.parseInt(Console.readLine());
+        return Integer.parseInt(Console.readLine());
+    }
 
-        List<String> names = Arrays.stream(inputCarsName.split(","))
+    private static List<String> parseNames(String inputString) {
+        return Arrays.stream(inputString.split(","))
                 .map(String::trim)
                 .toList();
-
-        String[] dashScores = new String[names.size()];
-        Arrays.fill(dashScores, "");
-
-        IntStream.range(0, tryCount)
-                .forEach(stage -> {
-                    IntStream.range(0, names.size())
-                            .forEach(personIdx -> {
-                                int randomValue = Randoms.pickNumberInRange(0, 9);
-                                if (randomValue >= 4) {
-                                    dashScores[personIdx] += "-";
-                                }
-                                System.out.println(names.get(personIdx) + " : " + dashScores[personIdx]);
-                            });
-
-                    System.out.println();
-                });
-
-        int winnerScore = Arrays.stream(dashScores)
-                .mapToInt(String::length) // 길이로 변환
-                .max()// 최댓값 찾기
-                .orElse(0);// 배열이 비어 있으면 0 반환
-
-        String winners = IntStream.range(0, dashScores.length)
-                .filter(personIdx -> dashScores[personIdx].length() == winnerScore)
-                .mapToObj(personIdx -> names.get(personIdx))
-                .collect(Collectors.joining(", "));
-
-        System.out.println("최종 우승자 : " + winners);
     }
 }
