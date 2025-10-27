@@ -1,7 +1,9 @@
 package racingcar;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,10 +14,14 @@ public class Application {
     public class RacingContants {
         static final int MOVING_FORWARD = 4;
         static final int MAX_NAME_LENGTH = 5;
+        static final int MAX_TRY_COUNT = 30;
 
         static final String CAR_NAME_EMPTY_ERROR = "공백을 제외한 이름을 입력해야 합니다.";
+        static final String DUPLICATE_COMMA_ERROR = "이름 사이에는 연속된 쉼표가 있을 수 없습니다.";
         static final String CAR_NAME_LENGTH_ERROR = "이름은 5자 이하만 가능합니다.";
+        static final String CAR_NAME_UNIQUE_ERROR = "중복된 이름이 존재합니다.";
         static final String TRY_COUNT_INVALID_ERROR = "시도할 횟수는 1 이상의 정수로 입력해야 합니다.";
+        static final String TRY_COUNT_MAX_ERROR = "시도할 횟수는 최대 30입니다.";
     }
 
     private static class Racingcar {
@@ -108,6 +114,9 @@ public class Application {
     }
 
     static void validateInputCarNames(String inputString) {
+        if (inputString.contains(",,")) {
+            throw new IllegalArgumentException(RacingContants.DUPLICATE_COMMA_ERROR);
+        }
         if (inputString.isBlank() || inputString.endsWith(",") || inputString.endsWith(" ")) {
             throw new IllegalArgumentException(RacingContants.CAR_NAME_EMPTY_ERROR);
         }
@@ -127,13 +136,15 @@ public class Application {
             int tryCount = Integer.parseInt(tryCountString);
             if (tryCount <= 0) {
                 throw new IllegalArgumentException(RacingContants.TRY_COUNT_INVALID_ERROR);
+            } else if (tryCount > RacingContants.MAX_TRY_COUNT) {
+                throw new IllegalArgumentException(RacingContants.TRY_COUNT_MAX_ERROR);
             }
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(RacingContants.TRY_COUNT_INVALID_ERROR);
         }
     }
 
-    static List<String> parseNames(String inputString) {
+    private static List<String> parseNames(String inputString) {
         List<String> names = Arrays.stream(inputString.split(","))
                 .map(String::trim)
                 .toList();
@@ -143,14 +154,19 @@ public class Application {
         return names;
     }
 
-    private static void validateCarNames(List<String> names) {
+    static void validateCarNames(List<String> names) {
+        Set<String> uniqueNames = new HashSet<>(names);
+        if (uniqueNames.size() != names.size()) {
+            throw new IllegalArgumentException(RacingContants.CAR_NAME_UNIQUE_ERROR);
+        }
+
         int maxLength = names.stream()
                 .mapToInt(String::length)
                 .max()
                 .orElse(0);
-
         if (maxLength > RacingContants.MAX_NAME_LENGTH) {
             throw new IllegalArgumentException(RacingContants.CAR_NAME_LENGTH_ERROR);
         }
+
     }
 }
